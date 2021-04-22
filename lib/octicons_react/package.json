@@ -14,6 +14,7 @@
     "build": "script/build.js && script/types.js && npm run rollup",
     "ts-test": "tsc -P ts-tests",
     "test": "jest",
+    "prepublishOnly": "yarn build",
     "posttest": "npm run ts-test",
     "start": "NODE_ENV=production next",
     "lint": "eslint src pages script",

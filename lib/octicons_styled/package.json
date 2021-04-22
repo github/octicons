@@ -17,6 +17,7 @@
     "build": "script/build.js && npm run rollup && script/copy.sh",
     "ts-test": "tsc -P ts-tests",
     "test": "jest",
+    "prepublishOnly": "yarn build",
     "posttest": "npm run ts-test",
     "lint": "eslint src script",
     "rollup": "rollup -c"

@@ -1,0 +1,10 @@
+{
+  "name": "octicons_gem",
+  "version": "13.0.0",
+  "private": true,
+  "scripts": {
+    "postinstall": "bundle install",
+    "build": "script/build",
+    "prepublishOnly": "(script/build; gem push pkg/*.gem) && wait"
+  }
+}

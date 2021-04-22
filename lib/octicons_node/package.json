@@ -18,6 +18,7 @@
   },
   "scripts": {
     "build": "\\cp -r ../build/ ./build && \\cp index.scss ./build/build.css",
+    "prepublishOnly": "yarn build",
     "lint": "eslint index.js tests/*.js",
     "test": "ava --verbose 'tests/*.js'"
   },

@@ -1,8 +1,4 @@
 on:
-  push:
-  pull_request:
-    branches:
-      - main
 name: Octicons Build
 jobs:
   setup:

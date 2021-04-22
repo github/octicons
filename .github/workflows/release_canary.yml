@@ -1,0 +1,73 @@
+name: Release
+on:
+  push:
+    branches-ignore:
+      - 'main'
+      - 'changeset-release/main'
+      - 'dependabot/**'
+
+jobs:
+  release-canary:
+    name: Canary
+    if: ${{ github.repository == 'primer/octicons' }}
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          # This makes Actions fetch all Git history so that Changesets can generate changelogs with the correct commits
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14.x
+
+      - name: Install dependencies
+        run: yarn
+
+      - name: Create .npmrc
+        run: |
+          cat << EOF > "$HOME/.npmrc"
+            //registry.npmjs.org/:_authToken=$NPM_TOKEN
+          EOF
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_AUTH_TOKEN_SHARED }}
+
+      - name: Create gem creds
+        run: |
+          mkdir -p ~/.gem
+          cat << EOF > ~/.gem/credentials
+          ---
+          :github: Bearer $GITHUB_TOKEN
+          :rubygems_api_key: $RUBYGEMS_TOKEN
+          EOF
+
+          chmod 0600 ~/.gem/credentials
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          RUBYGEMS_TOKEN: ${{secrets.RUBYGEMS_TOKEN_SHARED}}
+
+      - name: Publish canary version
+        run: |
+          echo -e "---\n'octicons_gem': patch\n'@primer/styled-octicons': patch\n'@primer/octicons': patch\n'@primer/octicons-react': patch\n---\n\nFake entry to force publishing" > .changeset/force-snapshot-release.md
+          yarn changeset version --snapshot
+          yarn changeset publish --tag canary
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Output canary version number
+        uses: actions/github-script@v3
+        with:
+          script: |
+            const package = require(`${process.env.GITHUB_WORKSPACE}/lib/octicons_node/package.json`)
+            github.repos.createCommitStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              sha: context.sha,
+              state: 'success',
+              context: `Published ${package.name}`,
+              description: package.version,
+              target_url: `https://unpkg.com/${package.name}@${package.version}/`
+            })
