@@ -11,6 +11,8 @@ module OcticonsHelper
 
     cache_key = [symbol, options]
 
+    octicons_helper_cache ||= {} if Rails.version <= "5.2.3"
+    
     if tag = octicons_helper_cache[cache_key]
       tag
     else
