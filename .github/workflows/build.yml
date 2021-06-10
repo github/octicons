@@ -18,7 +18,6 @@ jobs:
         uses: ./.github/actions/version
       - run: npm install
       - run: npm run build
-      - run: cp -r icons lib/build/svg
       - uses: actions/upload-artifact@master
         with:
           name: octicons

@@ -97,7 +97,8 @@ const icons = svgFilepaths.map(filepath => {
       keywords: keywords[name] || [],
       width: svgWidth,
       height: svgHeight,
-      path: svgPath
+      path: svgPath,
+      viewBox: svgViewBox
     }
   } catch (error) {
     // eslint-disable-next-line no-console
@@ -126,6 +127,7 @@ const iconsByName = icons.reduce(
         heights: {
           [icon.height]: {
             width: icon.width,
+            viewBox: icon.viewBox,
             path: icon.path
           }
         }
@@ -133,6 +135,18 @@ const iconsByName = icons.reduce(
     }),
   {}
 )
+
+Object.keys(iconsByName).forEach(name => {
+  const icon = iconsByName[name]
+  const {heights} = icon
+  let output = `<svg xmlns="http://www.w3.org/2000/svg"><defs>`
+  Object.keys(heights).forEach(height => {
+    const {width, viewBox, path} = heights[height]
+    output += `<symbol id="octicon-${icon.name}-${height}" viewBox="${viewBox}" width="${width}" height="${height}">${path}</symbol>`
+  })
+  output += `</defs></svg>`
+  fs.outputFileSync(path.resolve(`lib/build/symbols/${icon.name}.svg`), output)
+})
 
 if (argv.output) {
   fs.outputJsonSync(path.resolve(argv.output), iconsByName)

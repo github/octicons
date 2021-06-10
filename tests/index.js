@@ -5,6 +5,7 @@ const globby = require('globby')
 const year = new Date().getFullYear()
 const yearRegex = new RegExp(`Copyright \\(c\\) ${year} GitHub Inc\\.`)
 const octiconsLib = fs.readdirSync('./lib/build/svg')
+const octiconsSymbols = fs.readdirSync('./lib/build/symbols')
 const octiconsData = require('../lib/build/data.json')
 
 test(`LICENSE files have the current year ${year}`, t => {
@@ -19,6 +20,10 @@ test(`LICENSE files have the current year ${year}`, t => {
 
 test('SVG icons exist', t => {
   t.not(octiconsLib.length, 0, `We didn't find any svg files`)
+})
+
+test('SVG symbols exist', t => {
+  t.not(octiconsSymbols.length, 0, `We didn't find any symbols files`)
 })
 
 test('Data file exist', t => {

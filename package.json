@@ -5,7 +5,7 @@
     "version": "script/version",
     "test": "ava -v tests/*.js",
     "lint": "eslint tests",
-    "build": "script/build.js --input icons/**/*.svg --output lib/build/data.json",
+    "build": "script/build.js --input icons/**/*.svg --output lib/build/data.json && cp -r icons lib/build/svg",
     "start": "cd docs && npm run develop",
     "svgo": "svgo icons --config .svgo.yml"
   },

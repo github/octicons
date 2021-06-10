@@ -27,9 +27,6 @@ fi
 
 cd ./lib/$*
 
-echo "**************** Copying assets files to build directory ****************"
-cp -R ../build/ .
-
 echo "**************** Installing ****************"
 npm install
 
